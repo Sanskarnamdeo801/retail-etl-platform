@@ -17,7 +17,19 @@ def run_sql_group(engine, sql_files):
         else:
             print(f"Skipping missing: {file_path}")
 
-# 🔹 staging tables (DDL)
+
+def run_source_ddl(engine):
+    files = [
+        "sql/source/customers.sql",
+        "sql/source/products.sql",
+        "sql/source/orders.sql",
+        "sql/source/order_items.sql",
+        "sql/source/payments.sql",
+        "sql/source/shipments.sql",
+    ]
+    run_sql_group(engine, files)
+
+
 def run_staging_ddl(engine):
     files = [
         "sql/staging/stg_customers.sql",
@@ -29,7 +41,7 @@ def run_staging_ddl(engine):
     ]
     run_sql_group(engine, files)
 
-# 🔹 transformations (CTAS queries)
+
 def run_transform_sql(engine):
     files = [
         "sql/intermediate/int_orders_enriched.sql",
