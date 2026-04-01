@@ -22,15 +22,6 @@ def get_connection():
     return psycopg2.connect(**DB_CONFIG)
 
 
-def clear_tables(conn):
-    with conn.cursor() as cur:
-        cur.execute("""
-            TRUNCATE TABLE shipments, payments, order_items, orders, products, customers
-            RESTART IDENTITY CASCADE;
-        """)
-    conn.commit()
-
-
 def generate_customers(conn):
     rows = []
     for customer_id in range(1, NUM_CUSTOMERS + 1):
