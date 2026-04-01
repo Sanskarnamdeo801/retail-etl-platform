@@ -7,3 +7,7 @@ USER airflow
 COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -r /requirements.txt
 RUN pip install pytest
+
+COPY src /opt/airflow/src
+COPY sql /opt/airflow/sql
+COPY dags /opt/airflow/dags

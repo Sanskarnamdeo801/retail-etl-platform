@@ -6,26 +6,30 @@ import psycopg2
 fake = Faker("en_IN")
 
 DB_CONFIG = {
-    "host": "localhost",
+    "host": "host.docker.internal",
     "port": 5432,
     "dbname": "retail_ops_db",
     "user": "sanskarnamdeo",
-    "password": "Sans2208"   # apna actual password daal dena
+    "password": "Sans2208"   # apna actual password
 }
 
 NUM_CUSTOMERS = 10000
 NUM_PRODUCTS = 2000
 NUM_ORDERS = 50000
 
+
 def get_connection():
     return psycopg2.connect(**DB_CONFIG)
+
 
 def clear_tables(conn):
     with conn.cursor() as cur:
         cur.execute("""
-            TRUNCATE TABLE shipments, payments, order_items, orders, products, customers RESTART IDENTITY CASCADE;
+            TRUNCATE TABLE shipments, payments, order_items, orders, products, customers
+            RESTART IDENTITY CASCADE;
         """)
     conn.commit()
+
 
 def generate_customers(conn):
     rows = []
@@ -52,6 +56,7 @@ def generate_customers(conn):
     conn.commit()
     print(f"Inserted {len(rows)} customers")
 
+
 def generate_products(conn):
     categories = {
         "Electronics": ["Mobile", "Laptop", "TV", "Accessories"],
@@ -65,6 +70,7 @@ def generate_products(conn):
 
     rows = []
     product_id = 1
+
     for _ in range(NUM_PRODUCTS):
         category = random.choice(list(categories.keys()))
         sub_category = random.choice(categories[category])
@@ -94,6 +100,7 @@ def generate_products(conn):
     conn.commit()
     print(f"Inserted {len(rows)} products")
 
+
 def generate_orders_and_related(conn):
     order_rows = []
     order_item_rows = []
@@ -104,7 +111,6 @@ def generate_orders_and_related(conn):
     channels = ["online", "store", "app"]
     payment_methods = ["UPI", "Credit Card", "Debit Card", "Net Banking", "Cash"]
     payment_statuses = ["completed", "pending", "failed"]
-    shipment_statuses = ["delivered", "shipped", "in_transit", "pending"]
 
     order_item_id = 1
     payment_id = 1
@@ -208,7 +214,8 @@ def generate_orders_and_related(conn):
     print(f"Inserted {len(payment_rows)} payments")
     print(f"Inserted {len(shipment_rows)} shipments")
 
-def main():
+
+def generate_all_data():
     conn = get_connection()
     try:
         clear_tables(conn)
@@ -218,6 +225,3 @@ def main():
         print("Synthetic data generation completed successfully")
     finally:
         conn.close()
-
-if __name__ == "__main__":
-    main()

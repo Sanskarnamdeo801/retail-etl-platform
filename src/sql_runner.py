@@ -1,12 +1,17 @@
 from pathlib import Path
 from sqlalchemy import text
 
+
 def run_sql_file(engine, file_path: str):
     with open(file_path, "r", encoding="utf-8") as f:
         sql = f.read()
 
+    statements = [stmt.strip() for stmt in sql.split(";") if stmt.strip()]
+
     with engine.begin() as conn:
-        conn.execute(text(sql))
+        for statement in statements:
+            conn.execute(text(statement))
+
 
 def run_sql_group(engine, sql_files):
     for file_path in sql_files:
@@ -15,7 +20,7 @@ def run_sql_group(engine, sql_files):
             print(f"Running SQL: {file_path}")
             run_sql_file(engine, str(path))
         else:
-            print(f"Skipping missing: {file_path}")
+            print(f"Skipping missing file: {file_path}")
 
 
 def run_source_ddl(engine):
