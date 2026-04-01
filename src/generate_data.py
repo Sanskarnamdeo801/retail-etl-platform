@@ -1,16 +1,18 @@
+import os
 import random
 from datetime import datetime, timedelta
-from faker import Faker
+
 import psycopg2
+from faker import Faker
 
 fake = Faker("en_IN")
 
 DB_CONFIG = {
-    "host": "host.docker.internal",
-    "port": 5432,
-    "dbname": "retail_ops_db",
-    "user": "sanskarnamdeo",
-    "password": "Sans2208"   # apna actual password
+    "host": os.getenv("SRC_POSTGRES_HOST"),
+    "port": int(os.getenv("SRC_POSTGRES_PORT", "5432")),
+    "dbname": os.getenv("SRC_POSTGRES_DB"),
+    "user": os.getenv("SRC_POSTGRES_USER"),
+    "password": os.getenv("SRC_POSTGRES_PASSWORD"),
 }
 
 NUM_CUSTOMERS = 10000
@@ -54,7 +56,7 @@ def generate_products(conn):
         "Fashion": ["Footwear", "Clothing", "Watches"],
         "Home": ["Kitchen", "Furniture", "Decor"],
         "Beauty": ["Skincare", "Haircare", "Makeup"],
-        "Sports": ["Fitness", "Outdoor", "Shoes"]
+        "Sports": ["Fitness", "Outdoor", "Shoes"],
     }
 
     brands = ["Apple", "Samsung", "Nike", "Adidas", "Sony", "LG", "Boat", "Puma", "Mamaearth", "Ikea"]
@@ -209,7 +211,6 @@ def generate_orders_and_related(conn):
 def generate_all_data():
     conn = get_connection()
     try:
-        clear_tables(conn)
         generate_customers(conn)
         generate_products(conn)
         generate_orders_and_related(conn)

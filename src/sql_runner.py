@@ -3,14 +3,20 @@ from sqlalchemy import text
 
 
 def run_sql_file(engine, file_path: str):
-    with open(file_path, "r", encoding="utf-8") as f:
+    path = Path(file_path)
+    if not path.exists():
+        print(f"Skipping missing file: {file_path}")
+        return
+
+    with open(path, "r", encoding="utf-8") as f:
         sql = f.read()
 
     statements = [stmt.strip() for stmt in sql.split(";") if stmt.strip()]
 
-    with engine.begin() as conn:
+    with engine.connect() as conn:
         for statement in statements:
             conn.execute(text(statement))
+        conn.commit()
 
 
 def run_sql_group(engine, sql_files):
@@ -21,6 +27,14 @@ def run_sql_group(engine, sql_files):
             run_sql_file(engine, str(path))
         else:
             print(f"Skipping missing file: {file_path}")
+
+
+def reset_source_tables(engine):
+    run_sql_file(engine, "sql/source/reset_source.sql")
+
+
+def reset_target_tables(engine):
+    run_sql_file(engine, "sql/target/reset_target.sql")
 
 
 def run_source_ddl(engine):

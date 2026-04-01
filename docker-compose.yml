@@ -26,6 +26,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./src:/opt/airflow/src
       - ./tests:/opt/airflow/tests
+      - ./sql:/opt/airflow/sql
     networks:
       - airflow-network
 
@@ -50,6 +51,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./src:/opt/airflow/src
       - ./tests:/opt/airflow/tests
+      - ./sql:/opt/airflow/sql
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -74,6 +76,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./src:/opt/airflow/src
       - ./tests:/opt/airflow/tests
+      - ./sql:/opt/airflow/sql
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -98,6 +101,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./src:/opt/airflow/src
       - ./tests:/opt/airflow/tests
+      - ./sql:/opt/airflow/sql
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
