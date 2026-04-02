@@ -5,9 +5,9 @@ from datetime import datetime
 with DAG(
     dag_id="retail_postgres_etl",
     start_date=datetime(2026, 3, 1),
-    schedule="@daily",
+    schedule="*/30 * * * *",
     catchup=False,
-    tags=["retail", "postgres", "etl"]
+    tags=["retail", "postgres", "etl", "s3"]
 ) as dag:
 
     run_pipeline = BashOperator(
